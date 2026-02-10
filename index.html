@@ -1,1 +1,270 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cash Flow Simulator Pro | Nakit Akışı Simülatörü</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                    <rect width="32" height="32" rx="8" fill="#3b82f6"/>
+                    <path d="M16 8L24 12V20L16 24L8 20V12L16 8Z" fill="white"/>
+                    <circle cx="16" cy="16" r="3" fill="#3b82f6"/>
+                </svg>
+                <h1>Cash Flow Simulator Pro</h1>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary" id="resetBtn">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 3c-2.761 0-5 2.239-5 5s2.239 5 5 5 5-2.239 5-5h-1.5c0 1.933-1.567 3.5-3.5 3.5s-3.5-1.567-3.5-3.5 1.567-3.5 3.5-3.5v2l3-3-3-3v2z"/>
+                    </svg>
+                    Sıfırla
+                </button>
+                <button class="btn btn-primary" id="exportBtn">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 1l4 4h-3v6h-2v-6h-3l4-4zm-6 10v3h12v-3h2v5h-16v-5h2z"/>
+                    </svg>
+                    Rapor Al
+                </button>
+            </div>
+        </header>
 
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Sidebar - Input Panel -->
+            <aside class="sidebar">
+                <div class="section">
+                    <h2>
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9v-2h2v2zm0-4H9V5h2v4z"/>
+                        </svg>
+                        Başlangıç Durumu
+                    </h2>
+                    <div class="form-group">
+                        <label for="initialBalance">Başlangıç Bakiyesi (₺)</label>
+                        <input type="number" id="initialBalance" value="100000" step="1000">
+                    </div>
+                    <div class="form-group">
+                        <label for="simulationMonths">Simülasyon Süresi (Ay)</label>
+                        <input type="number" id="simulationMonths" value="12" min="3" max="60">
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10 2L2 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-8-5z"/>
+                        </svg>
+                        Gelir Kaynakları
+                    </h2>
+                    <div id="incomeList" class="item-list"></div>
+                    <button class="btn btn-ghost btn-block" id="addIncomeBtn">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        Gelir Ekle
+                    </button>
+                </div>
+
+                <div class="section">
+                    <h2>
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14h-2v-4H6v-2h4V7h2v4h4v2h-4v4z"/>
+                        </svg>
+                        Gider Kalemleri
+                    </h2>
+                    <div id="expenseList" class="item-list"></div>
+                    <button class="btn btn-ghost btn-block" id="addExpenseBtn">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        Gider Ekle
+                    </button>
+                </div>
+
+                <div class="section">
+                    <h2>
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z"/>
+                        </svg>
+                        Senaryolar
+                    </h2>
+                    <div class="form-group">
+                        <label for="growthRate">Gelir Artış Oranı (%/yıl)</label>
+                        <input type="number" id="growthRate" value="0" step="0.5" min="-50" max="100">
+                    </div>
+                    <div class="form-group">
+                        <label for="inflationRate">Enflasyon Oranı (%/yıl)</label>
+                        <input type="number" id="inflationRate" value="0" step="0.5" min="0" max="100">
+                    </div>
+                    <div class="form-group">
+                        <label for="variability">Değişkenlik (%)</label>
+                        <input type="number" id="variability" value="5" step="1" min="0" max="50">
+                    </div>
+                </div>
+
+                <button class="btn btn-primary btn-block btn-large" id="runSimulationBtn">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M5 3v14l11-7z"/>
+                    </svg>
+                    Simülasyonu Çalıştır
+                </button>
+            </aside>
+
+            <!-- Main Panel - Results -->
+            <main class="main-panel">
+                <!-- Summary Cards -->
+                <div class="cards-grid">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3>Son Bakiye</h3>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z"/>
+                            </svg>
+                        </div>
+                        <div class="card-value" id="finalBalance">₺0</div>
+                        <div class="card-change" id="finalBalanceChange">-</div>
+                    </div>
+
+                    <div class="card card-success">
+                        <div class="card-header">
+                            <h3>Toplam Gelir</h3>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M7 14l5-5 5 5z"/>
+                            </svg>
+                        </div>
+                        <div class="card-value" id="totalIncome">₺0</div>
+                        <div class="card-subtitle">Aylık Ort: <span id="avgIncome">₺0</span></div>
+                    </div>
+
+                    <div class="card card-danger">
+                        <div class="card-header">
+                            <h3>Toplam Gider</h3>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M7 10l5 5 5-5z"/>
+                            </svg>
+                        </div>
+                        <div class="card-value" id="totalExpense">₺0</div>
+                        <div class="card-subtitle">Aylık Ort: <span id="avgExpense">₺0</span></div>
+                    </div>
+
+                    <div class="card card-warning">
+                        <div class="card-header">
+                            <h3>Net Nakit Akışı</h3>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/>
+                            </svg>
+                        </div>
+                        <div class="card-value" id="netCashFlow">₺0</div>
+                        <div class="card-subtitle">Aylık Ort: <span id="avgCashFlow">₺0</span></div>
+                    </div>
+                </div>
+
+                <!-- Chart -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h2>Nakit Akışı Grafiği</h2>
+                        <div class="chart-legend">
+                            <div class="legend-item">
+                                <span class="legend-color" style="background: #3b82f6;"></span>
+                                <span>Bakiye</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color" style="background: #10b981;"></span>
+                                <span>Gelir</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color" style="background: #ef4444;"></span>
+                                <span>Gider</span>
+                            </div>
+                        </div>
+                    </div>
+                    <canvas id="cashFlowChart"></canvas>
+                </div>
+
+                <!-- Data Table -->
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2>Detaylı Döküm</h2>
+                        <button class="btn btn-secondary btn-small" id="exportTableBtn">Excel'e Aktar</button>
+                    </div>
+                    <div class="table-wrapper">
+                        <table id="cashFlowTable">
+                            <thead>
+                                <tr>
+                                    <th>Ay</th>
+                                    <th>Başlangıç</th>
+                                    <th>Gelir</th>
+                                    <th>Gider</th>
+                                    <th>Net Akış</th>
+                                    <th>Bitiş Bakiyesi</th>
+                                    <th>Değişim</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                <tr>
+                                    <td colspan="7" class="no-data">Simülasyon çalıştırılmadı</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Insights -->
+                <div class="insights-container">
+                    <h2>Öneriler ve İçgörüler</h2>
+                    <div id="insightsContent" class="insights-content">
+                        <p class="no-data">Simülasyon çalıştırıldığında içgörüler burada görünecek.</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal for Adding Items -->
+    <div class="modal" id="itemModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Kalem Ekle</h2>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="itemName">Ad</label>
+                    <input type="text" id="itemName" placeholder="Ör: Maaş, Kira, Satış">
+                </div>
+                <div class="form-group">
+                    <label for="itemAmount">Tutar (₺)</label>
+                    <input type="number" id="itemAmount" step="100" placeholder="0">
+                </div>
+                <div class="form-group">
+                    <label for="itemFrequency">Sıklık</label>
+                    <select id="itemFrequency">
+                        <option value="monthly">Aylık</option>
+                        <option value="quarterly">Üç Aylık</option>
+                        <option value="yearly">Yıllık</option>
+                        <option value="once">Tek Seferlik</option>
+                    </select>
+                </div>
+                <div class="form-group" id="onceMonthGroup" style="display: none;">
+                    <label for="onceMonth">Hangi Ay?</label>
+                    <input type="number" id="onceMonth" min="1" max="60" value="1">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="modalCancel">İptal</button>
+                <button class="btn btn-primary" id="modalSave">Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
